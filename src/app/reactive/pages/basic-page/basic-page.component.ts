@@ -27,7 +27,10 @@ export class BasicPageComponent {
   constructor(private formBuilder: FormBuilder) {}
 
   onSave() {
-    if (this.basicForm.invalid) return;
+    if (this.basicForm.invalid) {
+      this.basicForm.markAllAsTouched();
+      return;
+    }
     console.log(this.basicForm.value);
     this.basicForm.reset({
       name: '',
