@@ -26,6 +26,38 @@ export class BasicPageComponent {
 
   constructor(private formBuilder: FormBuilder) {}
 
+  isValidField(field: string): boolean | null | undefined {
+    return (
+      this.basicForm.get(field)?.errors && this.basicForm.get(field)?.touched
+    );
+  }
+
+  getFieldError(field: string): string | null | undefined {
+    if (!this.basicForm.controls[field]) return null;
+
+    const errors = this.basicForm.controls[field].errors || {};
+    if (!errors) return null;
+
+    const errorKeys = Object.keys(errors);
+
+    for (const key of Object.keys(errors)) {
+      switch (key) {
+        case 'required':
+          return `${field} es requerido`;
+        case 'minlength':
+          return `${field} debe al menos tener ${errors[key].requiredLength} caracteres`;
+        case 'min':
+          return `${field} el valor minimo debe ser igual o mayor a ${errors[key].min}!`;
+        default:
+          return null;
+      }
+    }
+
+    if (!errorKeys.length) return null;
+
+    return errors[errorKeys[0]];
+  }
+
   onSave() {
     if (this.basicForm.invalid) {
       this.basicForm.markAllAsTouched();
